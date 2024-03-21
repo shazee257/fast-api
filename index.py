@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from routes.user import router as UserRouter
+from routes.auth import router as AuthRouter
 
 app = FastAPI()
 
@@ -27,4 +28,5 @@ def read_root():
     return {"message": "Welcome to the FastAPI"}
 
 
-app.include_router(UserRouter, tags=["User"], prefix="/user")
+app.include_router(AuthRouter)
+app.include_router(UserRouter)

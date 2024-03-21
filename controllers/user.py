@@ -29,11 +29,6 @@ class UserController:
         )
         return users
 
-    async def createUser(user):
-        result = db.user.insert_one(dict(user))
-        user = serializeDict(db.user.find_one({"_id": result.inserted_id}))
-        return user
-
     async def updateUserById(id, user):
         print("2nd user controller", user)
         if not ObjectId.is_valid(id):
