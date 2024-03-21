@@ -1,7 +1,6 @@
-from fastapi import HTTPException, Depends
+from fastapi import HTTPException
 from bson import ObjectId
 from schemas.common import serializeDict, serializeList
-from config.database import get_db
 
 
 class UserController:

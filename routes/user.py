@@ -6,18 +6,20 @@ from config.database import get_db
 
 router = APIRouter(prefix="/api/user", tags=["User"])
 
+db = Depends(get_db)
+
 
 @router.get("/", summary="Fetch all users", response_model=list[User])
-async def fetchAllUsers(query: PaginationQueryDto = Depends(), db=Depends(get_db)):
+async def fetchAllUsers(query: PaginationQueryDto = Depends(), db=db):
     return await UserController.fetchAllUsers(query, db)
 
 
 @router.get("/{id}", summary="Fetch a user by id", response_model=User)
-async def fetchUserById(id: str, db=Depends(get_db)):
+async def fetchUserById(id: str, db=db):
     return await UserController.fetchUserById(id, db)
 
 
 # update user by id
 @router.put("/{id}", summary="Update a user by id")
-async def updateUserById(id: str, user: UpdateUserDto, db=Depends(get_db)):
+async def updateUserById(id: str, user: UpdateUserDto, db=db):
     return await UserController.updateUserById(id, user, db)
