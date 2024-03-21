@@ -4,13 +4,14 @@ from controllers.auth import AuthController
 from models.user import CreateUserDto
 from config.database import get_db
 from typing import Annotated
+from models.user import User
 
 router = APIRouter(prefix="/api/auth", tags=["Auth"])
 
 db = Depends(get_db)
 
 
-@router.post("/register", summary="Create a new user")
+@router.post("/register", summary="Create a new user", response_model=User)
 async def register(user: CreateUserDto, db=db):
     return await AuthController.register(user, db)
 
