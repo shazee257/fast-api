@@ -1,10 +1,7 @@
 from passlib.context import CryptContext
 from datetime import datetime
 from jose import jwt
-
-
-SECRET_KEY = "nCXEmL3K2hVkbS7uqtTFe4v8dfyQjNJ9WawHZxMBc6GrRgsPAD"
-ALGORITHM = "HS256"
+import os
 
 pwd_context = CryptContext(schemes=["sha256_crypt", "des_crypt"])
 
@@ -21,4 +18,6 @@ def createAccessToken(name: str, email: str, id: str, expiresDelta: int = 30):
     encode = {"id": id, "name": name, "email": email}
     expires = datetime.utcnow() + expiresDelta
     encode.update({"exp": expires})
-    return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
+    return jwt.encode(
+        encode, os.environ.get("SECRET_KEY"), algorithm=os.environ.get("ALGORITHM")
+    )
