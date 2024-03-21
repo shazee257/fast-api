@@ -6,7 +6,10 @@ name = "pypi"
 [packages]
 fastapi = "*"
 uvicorn = {extras = ["standard"], version = "*"}
-motor = "*"
+pymongo = "*"
+passlib = "*"
+python-dotenv = "*"
+pydantic = {extras = ["email"], version = "*"}
 
 [dev-packages]
 
