@@ -1,33 +1,27 @@
-from fastapi import APIRouter, HTTPException, Query
-from models.user import User
-from config.database import db
-from schemas.user import serializeDict, serializeList
-from bson import ObjectId
-from utils.helpers import generateResponse
+from fastapi import APIRouter, Depends
+from models.user import User, CreateUserDto, UpdateUserDto
+from controllers.user import UserController
+from models.common import PaginationQueryDto
 
 router = APIRouter()
 
 
-@router.get("/", summary="Fetch all users")
-async def fetchAllUsers(page: int = Query(1, ge=1), limit: int = Query(10, le=1000)):
-    skip = (page - 1) * limit
-    users = serializeList(db.user.find().skip(skip).limit(limit))
-    return generateResponse("Users fetched successfully", users)
+@router.get("/", summary="Fetch all users", response_model=list[User])
+async def fetchAllUsers(query: PaginationQueryDto = Depends()):
+    return await UserController.fetchAllUsers(query)
+
+
+@router.get("/{id}", summary="Fetch a user by id", response_model=User)
+async def fetchUserById(id: str):
+    return await UserController.fetchUserById(id)
 
 
 @router.post("/", summary="Create a new user")
-async def createUser(user: User):
-    result = db.user.insert_one(dict(user))
-    user = serializeDict(db.user.find_one({"_id": result.inserted_id}))
-    return generateResponse("User created successfully", user)
+async def createUser(user: CreateUserDto):
+    return await UserController.createUser(user)
 
 
-@router.get("/{id}", summary="Fetch a user by id")
-async def fetchUser(id: str):
-    if not ObjectId.is_valid(id):
-        raise HTTPException(422, "Invalid user ID format")
-
-    user = serializeDict(db.user.find_one({"_id": ObjectId(id)}))
-    if user:
-        return generateResponse("User fetched successfully", user)
-    raise HTTPException(404, "User not found")
+# update user by id
+@router.put("/{id}", summary="Update a user by id")
+async def updateUserById(id: str, user: UpdateUserDto):
+    return await UserController.updateUserById(id, user)
