@@ -2,7 +2,6 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from routes.user import router as UserRouter
-from utils.helpers import generateResponse
 
 app = FastAPI()
 
@@ -25,7 +24,7 @@ async def custom_http_exception_handler(request: Request, exc: HTTPException):
 
 @app.get("/")
 def read_root():
-    return generateResponse("Welcome to the FastAPI")
+    return {"message": "Welcome to the FastAPI"}
 
 
 app.include_router(UserRouter, tags=["User"], prefix="/user")
