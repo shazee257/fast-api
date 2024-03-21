@@ -2,6 +2,9 @@ from fastapi import HTTPException
 from schemas.common import serializeDict
 from utils.helpers import hashPassword, verifyPassword, createAccessToken
 from datetime import timedelta
+from fastapi.security import OAuth2PasswordBearer
+
+oauth2Bearer = OAuth2PasswordBearer(tokenUrl="/api/auth/token")
 
 
 class AuthController:
@@ -26,3 +29,17 @@ class AuthController:
                 return {"user": user, "accessToken": accessToken}
             raise HTTPException(401, "Invalid password")
         raise HTTPException(404, "User not found")
+
+    async def getToken(username, password, db):
+        user = serializeDict(db.user.find_one({"name": username}))
+        if not user:
+            raise HTTPException(401, "Invalid credentials")
+        if not verifyPassword(password, user.get("password")):
+            raise HTTPException(401, "Invalid credentials")
+
+        accessToken = await AuthController.createAccessToken(
+            user.get("name"),
+            user.get("email"),
+            str(user.get("_id")),
+            timedelta(minutes=20),
+        )
