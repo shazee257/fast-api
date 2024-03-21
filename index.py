@@ -3,6 +3,11 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from routes.user import router as UserRouter
 from routes.auth import router as AuthRouter
+from config.database import get_db
+
+db = get_db()
+if db:
+    print("DB Connected")
 
 app = FastAPI()
 

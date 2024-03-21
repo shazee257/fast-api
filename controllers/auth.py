@@ -1,10 +1,7 @@
-from fastapi import HTTPException, Depends
+from fastapi import HTTPException
 from schemas.common import serializeDict
 from utils.helpers import hashPassword, verifyPassword
-from config.database import get_db
-from typing import Annotated
 
-db = Annotated[get_db, Depends]
 
 class AuthController:
     async def register(user, db):
